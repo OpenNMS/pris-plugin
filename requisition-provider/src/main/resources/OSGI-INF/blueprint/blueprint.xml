@@ -1,0 +1,35 @@
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="
+        http://www.osgi.org/xmlns/blueprint/v1.0.0
+        http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+        ">
+
+  <bean id="prisServiceManager" class="org.opennms.plugins.pris.requisition.PrisServiceManager">
+  </bean>
+
+  <service interface="org.osgi.service.cm.ManagedServiceFactory" ref="prisServiceManager">
+    <service-properties>
+      <entry key="service.pid" value="org.opennms.plugins.feature.pris"/>
+    </service-properties>
+  </service>
+
+  <bean id="prisRequisitionProvider" class="org.opennms.plugins.pris.requisition.PrisRequisitionProvider">
+    <argument ref="prisServiceManager"/>
+  </bean>
+
+  <service ref="prisRequisitionProvider" interface="org.opennms.integration.api.v1.requisition.RequisitionProvider" >
+  </service>
+
+  <reference-list interface="org.opennms.plugins.pris.api.SourceFactory" availability="optional">
+    <reference-listener bind-method="onBindSourceFactory" unbind-method="onUnbindSourceFactory" ref="prisRequisitionProvider" />
+  </reference-list>
+
+  <reference-list interface="org.opennms.plugins.pris.api.MapperFactory" availability="optional">
+    <reference-listener bind-method="onBindMapperFactory" unbind-method="onUnbindMapperFactory" ref="prisRequisitionProvider" />
+  </reference-list>
+
+  <service interface="org.opennms.plugins.pris.api.MapperFactory">
+    <bean class="org.opennms.plugins.pris.mappers.EchoMapperFactory"/>
+  </service>
+
+</blueprint>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<features name="openmms-plugins-pris-features" xmlns="http://karaf.apache.org/xmlns/features/v1.4.0">
+
+  <repository>mvn:org.opennms.integration.api/karaf-features/${opennms.api.version}/xml</repository>
+
+  <feature name="opennms-plugins-pris-xls" description="OpenNMS :: Plugins :: Pris :: XLS " version="${project.version}">
+    <feature dependency="true">aries-blueprint</feature>
+    <feature version="${opennms.api.version}" dependency="true">opennms-integration-api</feature>
+    <bundle>mvn:org.opennms.plugins.pris-parent/api/${project.version}</bundle>
+    <bundle>mvn:org.opennms.plugins.pris-parent/pris-xls-plugin/${project.version}</bundle>
+    <bundle>mvn:org.opennms.plugins.pris-parent/requisition-provider/${project.version}</bundle>
+    <bundle>wrap:mvn:org.apache.poi/poi/${apachePoiVersion}</bundle>
+    <bundle>wrap:mvn:org.apache.poi/poi-ooxml/${apachePoiVersion}/$Export-Package=org.apache.poi.xssf.usermodel.*</bundle>
+    <bundle>mvn:com.google.guava/guava/${guavaVersion}</bundle>
+  </feature>
+
+</features>

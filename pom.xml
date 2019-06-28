@@ -27,6 +27,7 @@
     <module>pris-xls</module>
     <module>requisition-provider</module>
     <module>karaf-features</module>
+    <module>kar</module>
   </modules>
 
   <dependencyManagement>

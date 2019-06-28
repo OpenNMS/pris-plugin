@@ -35,21 +35,18 @@ source.file = /home/chandra/pris/myInventory.xls
 mapper = echo' > /opt/opennms/etc/org.opennms.plugins.feature.pris-myrouter.cfg
 ```
 
-### Installing on OpenNMS Container
+### Deployment on OpenNMS
 
 
 ```
-feature:repo-add mvn:org.opennms.plugins.pris-parent/karaf-features/1.0.0-SNAPSHOT/xml
+cp kar/target/opennms-pris-plugin.kar ~/opt/opennms/deploy/
 ```
 
 ```
 feature:install opennms-plugins-pris-xls
 ```
 
-
-## Deployment
-
-Using Kar
+* **To sustain restarts, add `opennms-plugins-pris-xls` feature to `org.apache.karaf.features.cfg`**
 
 
 ## Built With

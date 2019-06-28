@@ -11,6 +11,13 @@ git clone https://github.com/cgorantla/pris-plugin.git
 maven, java8, OpenNMS Horizon > 24.0.0
 
 
+### Improvements
+
+* Make PRIS compatible with OIA so that it can use same features that are already there.
+* Can run on OpenNMS and all the configuration co-exists.
+* No need to run another web-component
+
+
 ### Installing
 
 
@@ -28,25 +35,38 @@ mvn install
 
 ## Configure PRIS Resources.
 
+* Load myRouter config into OpenNMS.
+```
+echo 'name = myRouter
+source = xls
+source.file = /home/chandra/Downloads/myInventory-metadata.xls
+mapper = echo' > target/opennms/etc/org.opennms.plugins.feature.pris-myRouter.cfg
+```
+
+* Load myServer config into OpenNMS.
+```
+echo 'name = myServer
+source = xls
+source.file = /home/chandra/Downloads/myInventory-metadata.xls
+mapper = echo' > target/opennms/etc/org.opennms.plugins.feature.pris-myServer.cfg
+```
+
+* Import the requisition
+```
+./target/opennms/bin/send-event.pl uei.opennms.org/internal/importer/reloadImport --parm 'url requisition://pris?name=myServer'
+```
 
 ```
-echo 'source = xls
-source.file = /home/chandra/pris/myInventory.xls
-mapper = echo' > /opt/opennms/etc/org.opennms.plugins.feature.pris-myrouter.cfg
+./target/opennms/bin/send-event.pl uei.opennms.org/internal/importer/reloadImport --parm 'url requisition://pris?name=myRouter'
 ```
+
 
 ### Deployment on OpenNMS
 
 
 ```
-cp kar/target/opennms-pris-plugin.kar ~/opt/opennms/deploy/
+cp kar/target/opennms-pris-plugin.kar ~/dev/opennms/target/opennms/deploy/
 ```
-
-```
-feature:install opennms-plugins-pris-xls
-```
-
-* **To sustain restarts, add `opennms-plugins-pris-xls` feature to `org.apache.karaf.features.cfg`**
 
 
 ## Built With
@@ -54,7 +74,19 @@ feature:install opennms-plugins-pris-xls
 * [Maven](https://maven.apache.org/) - Dependency Management
 
 
-## Authors
+## Acknowledgments
 
-* **Chandra Gorantla**
+* This code is derived from original PRIS code base : https://github.com/OpenNMS/opennms-provisioning-integration-server
+* Modified to make use of OIA.
+* Modified to make use of OSGI Services and Config.
+* Added features and generate kar
+
+
+## Further Development
+
+* Add more Sources by implementing Source and SourceFactory.
+* Expose SourceFactory as osgi service in blueprint.
+* Can add more Mappers by implementing Mapper and MapperFactory
+* Expose MapperFactory as osgi service in blueprint
+* Add each source as different feature in karaf-features.
 

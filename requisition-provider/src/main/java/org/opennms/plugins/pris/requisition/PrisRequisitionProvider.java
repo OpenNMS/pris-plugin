@@ -92,11 +92,14 @@ public class PrisRequisitionProvider implements RequisitionProvider {
             Source prisSource = sourceFactory.create(requisitionProperties);
             return new PrisRequisitionRequest(prisSource, new EchoMapper());
         }
-        return null;
+        return new RequisitionRequest() {};
     }
 
     @Override
     public Requisition getRequisition(RequisitionRequest request) {
+        if(!(request instanceof  PrisRequisitionRequest)) {
+            throw new IllegalArgumentException("No matching requisition found in Pris");
+        }
         PrisRequisitionRequest prisRequisitionRequest = (PrisRequisitionRequest) request;
         Source prisSource = prisRequisitionRequest.getSource();
         Mapper prisMapper = prisRequisitionRequest.getMapper();
@@ -106,8 +109,8 @@ public class PrisRequisitionProvider implements RequisitionProvider {
             return prisMapper.map(prisSource.dump(), null);
         } catch (Exception e) {
             //Add log
+            throw new IllegalArgumentException("No matching requisition found in Pris ", e);
         }
-        return null;
     }
 
     @Override

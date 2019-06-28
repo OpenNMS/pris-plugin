@@ -34,6 +34,9 @@ import org.opennms.plugins.pris.api.Mapper;
 public class EchoMapper implements Mapper {
     @Override
     public Requisition map(Object data, Requisition requisition) throws Exception {
-        return (Requisition) data;
+        if(data instanceof  Requisition) {
+            return (Requisition) data;
+        }
+        throw new IllegalArgumentException();
     }
 }

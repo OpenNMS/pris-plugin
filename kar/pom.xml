@@ -31,11 +31,6 @@
               <featuresFile>mvn:org.opennms.plugins.pris-parent/karaf-features/${project.version}/xml</featuresFile>
               <finalName>opennms-pris-plugin</finalName>
               <ignoreDependencyFlag>true</ignoreDependencyFlag>
-              <archive>
-                <manifestEntries>
-                  <Karaf-Feature-Start>false</Karaf-Feature-Start>
-                </manifestEntries>
-              </archive>
             </configuration>
           </execution>
         </executions>

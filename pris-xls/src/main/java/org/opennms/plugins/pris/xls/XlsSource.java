@@ -39,12 +39,14 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.opennms.integration.api.v1.config.requisition.Requisition;
 import org.opennms.integration.api.v1.config.requisition.RequisitionAsset;
 import org.opennms.integration.api.v1.config.requisition.RequisitionInterface;
+import org.opennms.integration.api.v1.config.requisition.RequisitionMetaData;
 import org.opennms.integration.api.v1.config.requisition.RequisitionMonitoredService;
 import org.opennms.integration.api.v1.config.requisition.RequisitionNode;
 import org.opennms.integration.api.v1.config.requisition.SnmpPrimaryType;
 import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableRequisition;
 import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableRequisitionAsset;
 import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableRequisitionInterface;
+import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableRequisitionMetaData;
 import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableRequisitionMonitoredService;
 import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableRequisitionNode;
 import org.opennms.plugins.pris.api.Source;
@@ -59,6 +61,7 @@ public class XlsSource implements Source {
 			.getLogger(XlsSource.class);
 
 	private final String WITHIN_SPLITTER = ",";
+	private final String METADATA_SPLITTER = ":";
 
 	private final String PREFIX_FOR_ASSETS = "Asset_";
 	private final String INTERFACE_TYPE_PRIMARY = "P";
@@ -132,7 +135,7 @@ public class XlsSource implements Source {
 	
 	@Override
 	public Object dump() throws MissingRequiredColumnHeaderException, Exception {
-		//final String instance = this.config.getInstanceIdentifier();
+
 		final String instance = this.configProperties.get("name");
         ImmutableRequisition.Builder requisitionBuilder = ImmutableRequisition.newBuilder().setForeignSource(instance);
 		xls = new File(getXlsFile());
@@ -204,6 +207,9 @@ public class XlsSource implements Source {
 
 			// Adding assets
             getAssetsByRow(row).forEach(nodeBuilder::addAsset);
+
+            //Adding metadata
+			getMetadataByRow(row).forEach(nodeBuilder::addMetaData);
 
 			RequisitionInterface reqInterface = getInterfaceByRow(row);
 			// Add services to the interface
@@ -377,6 +383,35 @@ public class XlsSource implements Source {
 		return services;
 	}
 
+	private Set<RequisitionMetaData> getMetadataByRow(Row row) {
+		Set<RequisitionMetaData> metaDataSet = new HashSet<>();
+		List<Integer> relevantColumnIDs = getRelevantColumnIDs(OPTIONAL_MULTIPLE_SPLITCONTENT_PREFIXES.PREFIX_METADATA);
+		if (relevantColumnIDs != null) {
+			for (Integer column : relevantColumnIDs) {
+				Cell cell = row.getCell(column);
+				if (cell == null) {
+					continue;
+				}
+				String value = XlsSource.getStringValueFromCell(cell);
+				if (value == null) {
+					continue;
+				}
+				String rawMetadata = value
+						.trim();
+                String[] metadataArray = rawMetadata.split(METADATA_SPLITTER);
+                if(metadataArray.length != 3) {
+                	continue;
+				}
+				RequisitionMetaData metaData = ImmutableRequisitionMetaData.newBuilder().setContext(metadataArray[0])
+						.setKey(metadataArray[1])
+						.setValue(metadataArray[2])
+						.build();
+                metaDataSet.add(metaData);
+			}
+		}
+		return metaDataSet;
+	}
+
 	private Set<RequisitionAsset> getAssetsByRow(Row row) {
 		Set<RequisitionAsset> assets = new HashSet<>();
 		for (Map.Entry<String, Integer> entry : assetColumns.entrySet()) {
@@ -483,7 +518,7 @@ public class XlsSource implements Source {
 	 */
 	private enum OPTIONAL_MULTIPLE_SPLITCONTENT_PREFIXES {
 
-		PREFIX_CATEGORY("cat_"), PREFIX_SERVICE("svc_");
+		PREFIX_CATEGORY("cat_"), PREFIX_SERVICE("svc_"), PREFIX_METADATA("metadata_");
 
 		private final String PREFIX;
 

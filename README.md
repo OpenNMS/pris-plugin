@@ -4,7 +4,7 @@ PRIS Plugin that can be installed and run on OpenNMS Karaf Container
 
 ## Getting Started
 
-git clone https://github.com/cgorantla/pris-plugin.git
+git clone https://github.com/OpenNMS/pris-plugin.git
 
 ### Prerequisites
 
@@ -40,7 +40,7 @@ mvn install
 echo 'name = myRouter
 source = xls
 source.file = /home/chandra/Downloads/myInventory-metadata.xls
-mapper = echo' > target/opennms/etc/org.opennms.plugins.feature.pris-myRouter.cfg
+mapper = echo' > /opt/opennms/etc/org.opennms.plugins.feature.pris-myRouter.cfg
 ```
 
 * Load myServer config into OpenNMS.
@@ -48,7 +48,7 @@ mapper = echo' > target/opennms/etc/org.opennms.plugins.feature.pris-myRouter.cf
 echo 'name = myServer
 source = xls
 source.file = /home/chandra/Downloads/myInventory-metadata.xls
-mapper = echo' > target/opennms/etc/org.opennms.plugins.feature.pris-myServer.cfg
+mapper = echo' > /opt/opennms/etc/org.opennms.plugins.feature.pris-myServer.cfg
 ```
 
 * Import the requisition
@@ -65,7 +65,7 @@ mapper = echo' > target/opennms/etc/org.opennms.plugins.feature.pris-myServer.cf
 
 
 ```
-cp kar/target/opennms-pris-plugin.kar ~/dev/opennms/target/opennms/deploy/
+sudo cp kar/target/opennms-pris-plugin.kar ~/opt/opennms/deploy/
 ```
 
 

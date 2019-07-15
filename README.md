@@ -22,7 +22,7 @@ maven, java8, OpenNMS Horizon > 24.0.0
 
 
 ```
-git clone https://github.com/cgorantla/pris-plugin.git
+git clone https://github.com/OpenNMS/pris-plugin.git
 ```
 
 ```

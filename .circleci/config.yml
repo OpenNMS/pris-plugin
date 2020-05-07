@@ -1,0 +1,65 @@
+---
+version: 2.1
+
+executors:
+  build-executor:
+    docker:
+      - image: circleci/openjdk:8-jdk-stretch
+
+  release-executor:
+    docker:
+      - image: opennms/ghr:0.13.0-b4241
+jobs:
+  build:
+    executor: build-executor
+    steps:
+      - checkout
+      - restore_cache:
+          key: pris-xls-plugin-{{ checksum "pom.xml" }}
+      - run:
+          name: Fetch version number from pom.xml
+          command: |
+            .circleci/scripts/pom2version.py pom.xml > version.txt
+      - run:
+          name: Validate Maven project
+          command: |
+            mvn validate
+      - run:
+          name: Compile application
+          command: |
+            mvn install
+      - save_cache:
+          key: pris-xls-plugin-{{ checksum "pom.xml" }}
+          paths:
+            - ~/.m2
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - project
+
+  release-github:
+    executor: release-executor
+    steps:
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: Collect artifacts and publish archives to GitHub
+          command: |
+            mkdir github-latest
+            cp kar/target/opennms-pris-plugin.kar github-latest/opennms-pris-plugin-$(cat version.txt).kar
+            if [[ "develop" == "${CIRCLE_BRANCH}" ]]; then
+              GHR_OPTS="-prerelease -replace"
+            fi
+            ghr ${GHR_OPTS} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} $(cat version.txt) github-latest
+workflows:
+  commit:
+    jobs:
+      - build
+      - release-github:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - master
+                - develop

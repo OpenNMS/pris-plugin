@@ -32,6 +32,8 @@ jobs:
           key: pris-xls-plugin-{{ checksum "pom.xml" }}
           paths:
             - ~/.m2
+      - store_artifacts:
+          path: kar/target/opennms-pris-plugin.kar
       - persist_to_workspace:
           root: ~/
           paths:

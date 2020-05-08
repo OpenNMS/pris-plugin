@@ -1,6 +1,9 @@
+
 # PRIS Plugin
 
 PRIS Plugin that can be installed and run on OpenNMS Karaf Container
+
+[![OpenNMS](https://circleci.com/gh/OpenNMS/pris-plugin.svg?style=shield)](https://app.circleci.com/pipelines/github/OpenNMS/pris-plugin)
 
 ## Getting Started
 
@@ -73,6 +76,13 @@ sudo cp kar/target/opennms-pris-plugin.kar ~/opt/opennms/deploy/
 
 * [Maven](https://maven.apache.org/) - Dependency Management
 
+## Release
+
+* Version number comes from the `pom.xml` <version> tag
+* Merges to master trigger releases
+* Merges to develop trigger pre-releases
+* All other branches trigger just the build job
+* Branch build artifacts are in CircleCI of the build
 
 ## Acknowledgments
 

@@ -50,7 +50,7 @@ jobs:
             if [[ "develop" == "${CIRCLE_BRANCH}" ]]; then
               GHR_OPTS="-prerelease -replace"
             fi
-            ghr ${GHR_OPTS} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} $(cat version.txt) github-latest
+            ghr ${GHR_OPTS} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} v$(cat version.txt) github-latest
 workflows:
   commit:
     jobs:

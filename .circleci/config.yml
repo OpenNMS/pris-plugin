@@ -50,9 +50,9 @@ jobs:
             mkdir github-latest
             cp kar/target/opennms-pris-plugin.kar github-latest/opennms-pris-plugin-$(cat version.txt).kar
             if [[ "develop" == "${CIRCLE_BRANCH}" ]]; then
-              GHR_OPTS="-prerelease -replace"
+              GHR_OPTS="-prerelease"
             fi
-            ghr ${GHR_OPTS} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} v$(cat version.txt) github-latest
+            ghr ${GHR_OPTS} -replace -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} v$(cat version.txt) github-latest
 workflows:
   commit:
     jobs:

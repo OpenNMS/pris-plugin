@@ -10,7 +10,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <apachePoiVersion>3.17</apachePoiVersion>
+    <apachePoiVersion>4.1.1</apachePoiVersion>
     <guavaVersion>18.0</guavaVersion>
     <hamcrest.version>1.3</hamcrest.version>
     <java.version>1.8</java.version>
